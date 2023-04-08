@@ -1,21 +1,22 @@
 const db = require('../models');
 const Op = db.Sequelize.Op;
 
+// create main Model
+const Tutorial = db.tutorials;
+const Category = db.categories;
+const Comment = db.comments;
+
 // image Upload
 const multer = require('multer');
 const path = require('path');
 
 
-// create main Model
-const Product = db.products;
-const Review = db.reviews;
-const Category = db.categories;
 
 // main work
 
 // 1. create product
 
-const addProduct = async(req, res) => {
+const addTutorial = async(req, res) => {
 
     let info = {
         image: req.file.path,
@@ -25,9 +26,9 @@ const addProduct = async(req, res) => {
         published: req.body.published ? req.body.published : false
     }
 
-    const product = await Product.create(info)
-    res.status(200).send(product)
-    console.log(product)
+    const tutorial = await Tutorial.create(info)
+    res.status(200).send(tutorial)
+    console.log(tutorial)
 
 }
 
@@ -35,68 +36,70 @@ const addProduct = async(req, res) => {
 
 // 2. get all products
 
-const getAllProducts = async(req, res) => {
+const getAllTutorials = async(req, res) => {
 
-    let products = await Product.findAll({})
-    res.status(200).send(products)
+    let tutorials = await Tutorial.findAll({})
+    res.status(200).send(tutorials)
 
 }
 
 // 3. get single product
 
-const getOneProduct = async(req, res) => {
+const getOneTutorial = async(req, res) => {
 
     let id = req.params.id
-    let product = await Product.findOne({ where: { id: id } })
-    res.status(200).send(product)
+    let tutorial = await Tutorial.findOne({ where: { id: id } })
+    res.status(200).send(tutorial)
 
 }
 
 // 4. update Product
 
-const updateProduct = async(req, res) => {
+const updateTutorial = async(req, res) => {
 
     let id = req.params.id;
 
-    const product = await Product.update(req.body, { where: { id: id } });
+    const tutorial = await Tutorial.update(req.body, { where: { id: id } });
 
-    res.status(200).send(product);
+    res.status(200).send(tutorial);
 
 
 }
 
 // 5. delete product by id
 
-const deleteProduct = async(req, res) => {
+const deleteTutorial = async(req, res) => {
 
     let id = req.params.id
 
-    await Product.destroy({ where: { id: id } })
+    await Tutorial.destroy({ where: { id: id } })
 
-    res.status(200).send('Product is deleted !')
+    res.status(200).send('Tutorial is deleted !')
 
 }
 
 // 6. get published product
 
-const getPublishedProduct = async(req, res) => {
+const getPublishedTutorial = async(req, res) => {
 
-    const products = await Product.findAll({ where: { published: true } })
+    const tutorials = await Tutorial.findAll({ where: { published: true } })
 
-    res.status(200).send(products)
+    res.status(200).send(tutorials)
 
 }
 
 // 7. connect one to many relation Product and Reviews
 
-const getProductReviews = async(req, res) => {
+
+
+const getTutorialCategories = async(req, res) => {
 
     const id = req.params.id
 
-    const data = await Product.findOne({
+    const data = await Tutorial.findOne({
         include: [{
-            model: Review,
-            as: 'review'
+            model: Category,
+            as: 'category'
         }],
         where: { id: id }
     })
@@ -105,14 +108,14 @@ const getProductReviews = async(req, res) => {
 
 }
 
-const getProductCategories = async(req, res) => {
+const getTutorialComments = async(req, res) => {
 
     const id = req.params.id
 
-    const data = await Product.findOne({
+    const data = await Tutorial.findOne({
         include: [{
-            model: Category,
-            as: 'category'
+            model: Comment,
+            as: 'comment'
         }],
         where: { id: id }
     })
@@ -129,39 +132,38 @@ const search = (req, res) => {
         }
     } : null;
 
-    Product.findAll({ where: condition })
+    Tutorial.findAll({ where: condition })
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occurred while retrieving Products."
+                message: err.message || "Some error occurred while retrieving tutorials."
             });
         });
 };
 
 const deleteAll = (req, res) => {
-    Product.destroy({
+    Tutorial.destroy({
             where: {},
             truncate: false
         })
         .then(nums => {
-            res.send({ message: `${nums} Products were deleted successfully!` });
+            res.send({ message: `${nums} Tutorials were deleted successfully!` });
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occurred while removing all Products."
+                message: err.message || "Some error occurred while removing all tutorials."
             });
         });
 };
-
 
 
 // 8. Upload Image Controller
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'Images/products/')
+        cb(null, 'Images/tutorials/')
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname))
@@ -184,23 +186,16 @@ const upload = multer({
 }).single('image')
 
 
-
-
-
-
-
-
-
 module.exports = {
-    addProduct,
-    getAllProducts,
-    getOneProduct,
-    updateProduct,
-    deleteProduct,
-    getPublishedProduct,
-    getProductReviews,
+    addTutorial,
+    getAllTutorials,
+    getOneTutorial,
+    updateTutorial,
+    deleteTutorial,
+    getPublishedTutorial,
+    getTutorialCategories,
     upload,
-    getProductCategories,
+    getTutorialComments,
     search,
     deleteAll
 

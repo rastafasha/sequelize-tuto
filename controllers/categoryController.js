@@ -34,6 +34,20 @@ const addCategorytoProduct = async(req, res) => {
     res.status(200).send(category);
 
 }
+const addCategorytoTutorial = async(req, res) => {
+
+    const id = req.params.id;
+
+    let data = {
+            tutorialId: id,
+            category_id: req.body.category
+        }
+        // const category = await Category.create(data);
+
+    const category = await Category.update(data, { where: { id: id } });
+    res.status(200).send(category);
+
+}
 
 // 2. Get All Reviews
 
@@ -47,5 +61,6 @@ const getAllCategories = async(req, res) => {
 module.exports = {
     createCategory,
     addCategorytoProduct,
-    getAllCategories
+    getAllCategories,
+    addCategorytoTutorial
 }

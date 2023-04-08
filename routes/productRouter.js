@@ -1,4 +1,5 @@
 // import controllers review, products
+const { authJwt } = require("../middleware");
 const productController = require('../controllers/productController.js');
 const reviewController = require('../controllers/reviewController');
 const categoryController = require('../controllers/categoryController');
@@ -9,36 +10,36 @@ const router = require('express').Router();
 
 
 // use routers
-router.post('/addProduct', productController.upload, productController.addProduct);
+router.get('/:id', [authJwt.verifyToken], productController.getOneProduct);
 
-router.get('/allProducts', productController.getAllProducts);
+router.put('/update/:id', [authJwt.verifyToken, authJwt.isAdmin], productController.updateProduct);
 
-router.get('/published', productController.getPublishedProduct);
+router.delete('/delete/:id', [authJwt.verifyToken, authJwt.isAdmin], productController.deleteProduct);
+
+router.post('/addProduct', [authJwt.verifyToken, authJwt.isAdmin], productController.upload, productController.addProduct);
+
+router.get('/allProducts', [authJwt.verifyToken, authJwt.isAdmin], productController.getAllProducts);
+
+router.get('/published', [authJwt.verifyToken], productController.getPublishedProduct);
+
+// search
+router.get("/search?title=[kw]", productController.search);
+
+// Delete all 
+router.delete("/deleteAll", productController.deleteAll);
 
 
+// Reviews
+router.get('/allReviews', [authJwt.verifyToken], reviewController.getAllReviews);
+router.post('/addReview/:id', [authJwt.verifyToken], reviewController.addReview);
 
-// Review Url and Controller
+// get product Reviews, category, comment
+router.get('/getProductReviews/:id', [authJwt.verifyToken], productController.getProductReviews);
+router.get('/getProductCategory/:id', [authJwt.verifyToken], productController.getProductCategories);
 
-router.get('/allReviews', reviewController.getAllReviews);
-router.post('/addReview/:id', reviewController.addReview);
-
-// get product Reviews
-router.get('/getProductReviews/:id', productController.getProductReviews);
-router.get('/getProductCategory/:id', productController.getProductCategories);
-
-
-
-
-// Products router
-router.get('/:id', productController.getOneProduct);
-
-router.put('/update/:id', productController.updateProduct);
-
-router.delete('/:id', productController.deleteProduct);
 
 //category
-router.post('/createCategory', categoryController.createCategory);
-router.put('/addCategory/:id', categoryController.addCategorytoProduct);
-router.get('/allCategories', categoryController.getAllCategories);
+router.put('/addCategory/:id', [authJwt.verifyToken, authJwt.isAdmin], categoryController.addCategorytoProduct);
+
 
 module.exports = router;
