@@ -1,4 +1,7 @@
-// import controllers review, products
+/*
+ Ruta: /api/product
+ */
+
 const { authJwt } = require("../middleware");
 const productController = require('../controllers/productController.js');
 const reviewController = require('../controllers/reviewController');
@@ -9,7 +12,7 @@ const categoryController = require('../controllers/categoryController');
 const router = require('express').Router();
 
 
-// use routers
+// crud
 router.get('/:id', [authJwt.verifyToken], productController.getOneProduct);
 
 router.put('/update/:id', [authJwt.verifyToken, authJwt.isAdmin], productController.updateProduct);

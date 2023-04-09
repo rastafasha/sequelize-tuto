@@ -54,38 +54,38 @@ db.sequelize.sync({ force: false })
 
 
 
-function initial() { //create 3 rows in db
+function initial() { //create 3 roles principales
     Role.create({
         id: 1,
-        name: "user"
+        name: "ROLE_GUEST"
     });
 
     Role.create({
         id: 2,
-        name: "moderator"
+        name: "ROLE_MEMBER"
     });
 
     Role.create({
         id: 3,
-        name: "admin"
+        name: "ROLE_ADMIN"
     });
 }
 
-function initialUser() { //create 3 rows in db
+function initialUser() { //create 3 usuarios base
     User.create({
         id: 1,
         username: "admin",
         email: "admin@admin.com",
         password: "$2y$10$5CGKRFgnzih.ef5zg8Z85.cU2Q4FR.91kWKINnKpe24uQW4hiQWlS", //password
-        role: "admin",
+        role: "ROLE_ADMIN",
     });
 
     User.create({
         id: 2,
-        username: "moderator",
+        username: "member",
         email: "moderator@moderator.com",
         password: "$2y$10$5CGKRFgnzih.ef5zg8Z85.cU2Q4FR.91kWKINnKpe24uQW4hiQWlS", //password
-        role: "moderator",
+        role: "ROLE_MEMBER",
     });
 
     User.create({
@@ -93,7 +93,7 @@ function initialUser() { //create 3 rows in db
         username: "guest",
         email: "guest@guest.com",
         password: "$2y$10$5CGKRFgnzih.ef5zg8Z85.cU2Q4FR.91kWKINnKpe24uQW4hiQWlS", //password
-        role: "user",
+        role: "ROLE_GUEST",
     });
 }
 
@@ -170,10 +170,7 @@ db.user.hasOne(db.refreshToken, {
     targetKey: 'id'
 });
 
-db.ROLES = ["user", "admin", "moderator"];
-
-
-
+db.ROLES = ["guest", "admin", "member"];
 
 
 module.exports = db;

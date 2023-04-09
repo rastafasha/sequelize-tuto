@@ -1,4 +1,7 @@
-// import controllers review, products
+/*
+ Ruta: /api/tutorial
+ */
+
 const { authJwt } = require("../middleware");
 const tutorialController = require('../controllers/tutorialController');
 const categoryController = require('../controllers/categoryController');
@@ -9,7 +12,7 @@ const commentController = require('../controllers/commentController');
 const router = require('express').Router();
 
 
-// use routers
+// crud
 router.get('/:id', [authJwt.verifyToken], tutorialController.getOneTutorial);
 
 router.put('/update/:id', [authJwt.verifyToken, authJwt.isAdmin], tutorialController.updateTutorial);

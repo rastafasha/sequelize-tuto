@@ -1,4 +1,7 @@
-// import controllers review, products
+/*
+ Ruta: /api/user
+ */
+
 const { authJwt } = require("../middleware");
 const userController = require('../controllers/userController');
 const addressController = require('../controllers/addressController');
@@ -8,7 +11,7 @@ const addressController = require('../controllers/addressController');
 const router = require('express').Router();
 
 
-// use crud
+// crud
 router.get('/:id', [authJwt.verifyToken], userController.getOneUser);
 
 router.delete('/delete/:id', [authJwt.verifyToken, authJwt.isAdmin], userController.deleteUser);
